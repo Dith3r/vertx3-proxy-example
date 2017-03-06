@@ -28,36 +28,30 @@ public class GroupUserHandler implements Handler<RoutingContext> {
     context.request().pause();
     Session session = context.session();
 
-    String group = session.get("group");
-
-    if (group == null) {
-      String userId = context.request().getParam("id");
-      if (userId == null) {
-        context.fail(HttpURLConnection.HTTP_BAD_REQUEST);
-      }
-      Future<Void> voidFuture = userDAL.findUser(userId)
-          .compose(user -> {
-            if (!user.isFound()) {
-              return Future.failedFuture("user not found");
-            }
-            if (!user.hasGroupName()) {
-              String groupName = userGroupModel.peek();
-              session.put("group", groupName);
-              return userDAL.updateGroupNameById(userId, groupName);
-            } else {
-              session.put("group", user.getGroupName());
-              return Future.succeededFuture();
-            }
-          })
-          .setHandler(asyncResult -> {
-            if (asyncResult.succeeded()) {
-              context.next();
-            } else {
-              context.fail(asyncResult.cause());
-            }
-          });
-    } else {
-      context.next();
+    String userId = context.request().getParam("id");
+    if (userId == null) {
+      context.fail(HttpURLConnection.HTTP_BAD_REQUEST);
     }
+    userDAL.findUser(userId)
+        .compose(user -> {
+          if (!user.isFound()) {
+            return Future.failedFuture("user not found");
+          }
+          if (!user.hasGroupName()) {
+            String groupName = userGroupModel.peek();
+            session.put("group", groupName);
+            return userDAL.updateGroupNameById(userId, groupName);
+          } else {
+            session.put("group", user.getGroupName());
+            return Future.succeededFuture();
+          }
+        })
+        .setHandler(asyncResult -> {
+          if (asyncResult.succeeded()) {
+            context.next();
+          } else {
+            context.fail(asyncResult.cause());
+          }
+        });
   }
 }
