@@ -1,17 +1,18 @@
 plugins {
     id 'java'
     id 'idea'
-    id 'com.github.johnrengelman.shadow' version '1.2.2'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
 version = '1.0.0'
-def vertxVersion = '3.0.0'
+def vertxVersion = '3.3.3'
 
 if (!JavaVersion.current().java8Compatible) {
     throw new IllegalStateException("We need Java 8 to proper run this application")
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
         url = 'http://oss.sonatype.org/content/repositories/snapshots/'
@@ -22,7 +23,7 @@ dependencies {
     compile "io.vertx:vertx-core:$vertxVersion"
     compile "io.vertx:vertx-web:$vertxVersion"
     compile "io.vertx:vertx-mongo-client:$vertxVersion"
-    compile "com.google.inject:guice:4.0"
+    compile "com.google.inject:guice:4.1.0"
 
     testCompile "junit:junit:4.12"
     testCompile "io.vertx:vertx-unit:$vertxVersion"
@@ -30,9 +31,8 @@ dependencies {
 }
 
 shadowJar {
-    classifier = 'fat'
     manifest {
-        attributes 'Main-Class': 'io.vertx.core.Starter'
+        attributes 'Main-Class': 'io.vertx.core.Launcher'
         attributes 'Main-Verticle': 'com.dither.ProxyVerticle'
     }
     mergeServiceFiles {
@@ -40,6 +40,7 @@ shadowJar {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.5'
+
+wrapper {
+    gradleVersion = '3.3'
 }

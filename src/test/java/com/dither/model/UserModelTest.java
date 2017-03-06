@@ -66,7 +66,7 @@ public class UserModelTest {
         JsonObject userJson = new JsonObject();
         userJson.put("_id", "myUser");
 
-        UserModel userModel = UserModel.createFromJson(userJson);
+        UserModel userModel = UserModel.fromJson(userJson);
         assertTrue("UserId should be in result", userModel.isFound());
         assertFalse("Group should not be in result", userModel.hasGroupName());
     }
@@ -81,7 +81,7 @@ public class UserModelTest {
         JsonObject userJson = new JsonObject();
         userJson.put("groupName", "group");
 
-        UserModel userModel = UserModel.createFromJson(userJson);
+        UserModel userModel = UserModel.fromJson(userJson);
         assertFalse("UserId should not be in result", userModel.isFound());
         assertTrue("GroupName should be in result", userModel.hasGroupName());
     }
@@ -95,7 +95,7 @@ public class UserModelTest {
     public void testCreateFromJsonGroupNameWithEmptyJsonObject() throws Exception {
         JsonObject userJson = new JsonObject();
 
-        UserModel userModel = UserModel.createFromJson(userJson);
+        UserModel userModel = UserModel.fromJson(userJson);
         assertFalse("Empty json object should return no group", userModel.hasGroupName());
     }
 
@@ -108,7 +108,7 @@ public class UserModelTest {
     public void testCreateFromJsonIsFoundWithEmptyJsonObject() throws Exception {
         JsonObject userJson = new JsonObject();
 
-        UserModel userModel = UserModel.createFromJson(userJson);
+        UserModel userModel = UserModel.fromJson(userJson);
         assertFalse("Empty json object should return not found state", userModel.isFound());
     }
 }

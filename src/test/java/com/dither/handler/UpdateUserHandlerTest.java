@@ -6,13 +6,11 @@ import com.dither.model.UserGroupModel;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -50,7 +48,7 @@ public class UpdateUserHandlerTest extends HandlerTest {
         updateUserHandler.handle(routingContext);
 
         // should never touch user
-        verify(userDAL, never()).updateUser(any(), any(), any());
+        verify(userDAL, never()).updateGroupNameById(any(), any(), any());
         // main purpose of class
         verify(routingContext, times(1)).next();
     }
@@ -69,7 +67,7 @@ public class UpdateUserHandlerTest extends HandlerTest {
         when(session.get("group")).thenReturn(null);
         when(httpServerRequest.getParam("id")).thenReturn(userId);
         when(userGroupModel.peek()).thenReturn(groupName);
-        when(userDAL.updateUser(eq(userId), eq(groupName), anyObject())).thenAnswer(invocation -> {
+        when(userDAL.updateGroupNameById(eq(userId), eq(groupName), anyObject())).thenAnswer(invocation -> {
             @SuppressWarnings("unchecked")
             Handler<AsyncResult<Void>> handler = (Handler<AsyncResult<Void>>) invocation.getArguments()[2];
             handler.handle(result);
@@ -99,7 +97,7 @@ public class UpdateUserHandlerTest extends HandlerTest {
         when(session.get("group")).thenReturn(null);
         when(httpServerRequest.getParam("id")).thenReturn(userId);
         when(userGroupModel.peek()).thenReturn(groupName);
-        when(userDAL.updateUser(eq(userId), eq(groupName), anyObject())).thenAnswer(invocation -> {
+        when(userDAL.updateGroupNameById(eq(userId), eq(groupName), anyObject())).thenAnswer(invocation -> {
             @SuppressWarnings("unchecked")
             Handler<AsyncResult<Void>> handler = (Handler<AsyncResult<Void>>) invocation.getArguments()[2];
             handler.handle(result);
