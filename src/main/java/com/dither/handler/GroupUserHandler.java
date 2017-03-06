@@ -28,7 +28,7 @@ public class GroupUserHandler implements Handler<RoutingContext> {
     context.request().pause();
     Session session = context.session();
 
-    if (session.get("group") == null) {
+    if (session.get("group") != null) {
       context.next();
     } else {
       String userId = context.request().getParam("id");
