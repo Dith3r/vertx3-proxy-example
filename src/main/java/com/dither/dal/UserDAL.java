@@ -3,6 +3,7 @@ package com.dither.dal;
 
 import com.dither.model.UserModel;
 import io.vertx.core.Future;
+import java.util.Optional;
 
 /**
  * User data access layer is interface for accessing users data
@@ -15,7 +16,7 @@ public interface UserDAL {
    * @param userId String user id to find
    * @return UserDAL
    */
-  Future<UserModel> findUser(String userId);
+  Future<Optional<UserModel>> findUser(String userId);
 
   /**
    * Update user group name by user id

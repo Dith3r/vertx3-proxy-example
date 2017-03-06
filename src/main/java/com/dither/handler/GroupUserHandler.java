@@ -2,12 +2,14 @@ package com.dither.handler;
 
 import com.dither.dal.UserDAL;
 import com.dither.model.UserGroupModel;
+import com.dither.model.UserModel;
 import com.google.inject.Inject;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import java.net.HttpURLConnection;
+import javax.jws.soap.SOAPBinding.Use;
 
 /**
  * Handler role is to check if group is assigned for user in database
@@ -37,15 +39,19 @@ public class GroupUserHandler implements Handler<RoutingContext> {
       }
       userDAL.findUser(userId)
           .compose(user -> {
-            if (!user.isFound()) {
+            if (!user.isPresent()) {
               return Future.failedFuture("user not found");
             }
-            if (!user.hasGroupName()) {
-              String groupName = userGroupModel.peek();
-              session.put("group", groupName);
+
+            String groupName = user.filter(UserModel::hasGroupName)
+                .map(UserModel::getGroupName)
+                .orElseGet(userGroupModel::peek);
+
+            session.put("group", groupName);
+
+            if (!user.get().hasGroupName()) {
               return userDAL.updateGroupNameById(userId, groupName);
             } else {
-              session.put("group", user.getGroupName());
               return Future.succeededFuture();
             }
           })

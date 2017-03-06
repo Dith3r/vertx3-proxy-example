@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
+import java.util.Optional;
 
 public class MongoUserDAL implements UserDAL {
 
@@ -31,8 +32,8 @@ public class MongoUserDAL implements UserDAL {
    */
 
   @Override
-  public Future<UserModel> findUser(String userId) {
-    Future<UserModel> result = Future.future();
+  public Future<Optional<UserModel>> findUser(String userId) {
+    Future<Optional<UserModel>> result = Future.future();
     JsonObject query = new JsonObject().put("_id", userId);
     JsonObject fields = new JsonObject().put("groupName", true).put("_id", true);
 
